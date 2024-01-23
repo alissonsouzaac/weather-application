@@ -45,6 +45,7 @@ const WeatherComponent: React.FC = () => {
     setWeatherData('');
     setCity('');
     setLoading(false);
+    setError('');
     weatherStore.clearWeatherDescription();
   };
 
