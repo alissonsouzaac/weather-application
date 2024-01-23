@@ -1,4 +1,3 @@
-// WeatherComponent.tsx
 import React, { useState } from 'react';
 import { TextField, Button, CircularProgress, Typography, Alert } from '@mui/material';
 import { getWeatherData } from '../service/WeatherService';
