@@ -4,6 +4,8 @@ import { TextField, Button, CircularProgress, Typography, Alert } from '@mui/mat
 import { getWeatherData } from '../service/WeatherService';
 import { WaetherGroupButtons, WeatherContainer } from './styles';
 import { WeatherType } from '../types/weather';
+import WeatherDisplay from './WeatherSimulationComponent';
+import weatherStore from '../store/weather/WeatherStore';
 
 
 const WeatherComponent: React.FC = () => {
@@ -38,12 +40,19 @@ const WeatherComponent: React.FC = () => {
       setLoading(false);
     }
   };
-
+  
   const handleClear = () => {
     setWeatherData('');
     setCity('');
     setLoading(false);
+    weatherStore.clearWeatherDescription();
   };
+
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      handleSearch();
+    }
+  }
 
   const toggleTemperatureUnit = () => {
     setTemperatureUnit((prevUnit) => (prevUnit === 'Celsius' ? 'Fahrenheit' : 'Celsius'));
@@ -54,6 +63,8 @@ const WeatherComponent: React.FC = () => {
   };
 
   return (
+    <>
+    <WeatherDisplay />
     <WeatherContainer className='Weather'>
       <Typography variant="h4" gutterBottom>
         Weather App
@@ -66,10 +77,11 @@ const WeatherComponent: React.FC = () => {
         margin="normal"
         value={city}
         onChange={(e) => setCity(e.target.value)}
+        onKeyPress={handleKeyPress}
       />
 
       <WaetherGroupButtons>
-        <Button variant="contained" color="primary" onClick={handleSearch}>
+        <Button variant="contained" color="primary" className='ToggleButton' onClick={handleSearch}>
             Search
         </Button>
         <Button variant="contained" color="primary" onClick={toggleTemperatureUnit}>
@@ -89,16 +101,17 @@ const WeatherComponent: React.FC = () => {
 
       {weatherData && !error && (
         <div style={{ marginTop: '20px' }}>
-          <Typography variant="h5">{city}</Typography>
+          <Typography variant="h5">{weatherData.name}</Typography>
           <Typography variant="body1">
             Temperature: {convertTemperature(weatherData.main.temp)}°{temperatureUnit}
           </Typography>
-          <Typography variant="body1">Description: {weatherData.weather[0].description}</Typography>
+          <Typography variant="body1">Weather Description: {weatherData.weather[0].description}</Typography>
           <Typography variant="body1">Humidity: {weatherData.main.humidity}%</Typography>
           <Typography variant="body1">Wind Speed: {weatherData.wind.speed} m/s</Typography>
         </div>
       )}
     </WeatherContainer>
+    </>
   );
 };
 
