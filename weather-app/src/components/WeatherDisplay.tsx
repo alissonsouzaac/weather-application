@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import weatherStore from '../store/weather/WeatherStore';
+import React from 'react';
+import weatherStore from '../store/weather/useWeatherStore';
 
 
 const WeatherDisplay: React.FC = () => {
@@ -21,10 +21,7 @@ const WeatherDisplay: React.FC = () => {
   };
 
   const iconPath = getIconPath(weatherCondition);
-  useEffect(() => {
-    console.log(iconPath)
-    console.log(weatherCondition)
-  }, [iconPath, weatherCondition])
+
   return (
     <div className="weather-display">
       <img src={iconPath} alt="Weather Icon" style={{height: 50, width: 50}} />

@@ -1,6 +1,6 @@
 import { makeObservable, observable, action } from 'mobx';
 
-class WeatherStore {
+class useWeatherStore {
   weatherDescription = '';
 
   constructor() {
@@ -19,5 +19,5 @@ class WeatherStore {
   }
 }
 
-const weatherStore = new WeatherStore();
+const weatherStore = new useWeatherStore();
 export default weatherStore;

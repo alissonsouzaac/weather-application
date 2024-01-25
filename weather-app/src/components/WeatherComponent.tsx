@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import { TextField, Button, CircularProgress, Typography, Alert } from '@mui/material';
 import { getWeatherData } from '../service/WeatherService';
 import { WaetherGroupButtons, WeatherContainer } from './styles';
-import { WeatherType } from '../types/weather';
-import WeatherDisplay from './WeatherSimulationComponent';
-import weatherStore from '../store/weather/WeatherStore';
+import WeatherDisplay from './WeatherDisplay';
+import weatherStore from '../store/weather/useWeatherStore';
+import { WeatherData } from '../types/weather';
 
 
 const WeatherComponent: React.FC = () => {
   const [city, setCity] = useState<string>('');
-  const [weatherData, setWeatherData] = useState<any>();
+  const [weatherData, setWeatherData] = useState<WeatherData | null>();
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [temperatureUnit, setTemperatureUnit] = useState<string>('Celsius');
@@ -41,7 +41,7 @@ const WeatherComponent: React.FC = () => {
   };
   
   const handleClear = () => {
-    setWeatherData('');
+    setWeatherData(null);
     setCity('');
     setLoading(false);
     setError('');
@@ -64,53 +64,55 @@ const WeatherComponent: React.FC = () => {
 
   return (
     <>
-    <WeatherDisplay />
-    <WeatherContainer className='Weather'>
-      <Typography variant="h4" gutterBottom>
-        Weather App
-      </Typography>
-
-      <TextField
-        label="Enter city name"
-        variant="outlined"
-        fullWidth
-        margin="normal"
-        value={city}
-        onChange={(e) => setCity(e.target.value)}
-        onKeyPress={handleKeyPress}
-      />
-
-      <WaetherGroupButtons>
-        <Button variant="contained" color="primary" className='ToggleButton' onClick={handleSearch}>
-            Search
-        </Button>
-        <Button variant="contained" color="primary" onClick={toggleTemperatureUnit}>
-            Toggle Temperature
-        </Button>
-        <Button variant="contained" color="primary" onClick={handleClear}>
-            Clear
-        </Button>
-      </WaetherGroupButtons>  
-
-      {loading && <CircularProgress style={{ marginTop: '20px' }} />}
-      {error && (
-        <Alert variant="filled" severity="warning" style={{ marginTop: '20px' }}>
-          {error}
-        </Alert>
-      )}
-
       {weatherData && !error && (
-        <div style={{ marginTop: '20px' }}>
-          <Typography variant="h5">{weatherData.name}</Typography>
-          <Typography variant="body1">
-            Temperature: {convertTemperature(weatherData.main.temp)}°{temperatureUnit}
-          </Typography>
-          <Typography variant="body1">Weather Description: {weatherData.weather[0].description}</Typography>
-          <Typography variant="body1">Humidity: {weatherData.main.humidity}%</Typography>
-          <Typography variant="body1">Wind Speed: {weatherData.wind.speed} m/s</Typography>
-        </div>
+        <WeatherDisplay />
       )}
-    </WeatherContainer>
+      <WeatherContainer className='Weather'>
+        <Typography variant="h4" gutterBottom>
+          Weather App
+        </Typography>
+
+        <TextField
+          label="Enter city name"
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          value={city}
+          onChange={(e) => setCity(e.target.value)}
+          onKeyPress={handleKeyPress}
+        />
+
+        <WaetherGroupButtons>
+          <Button style={{marginRight: '5px'}} variant="contained" color="primary" onClick={handleSearch}>
+              Search
+          </Button>
+          <Button style={{marginRight: '5px'}} variant="contained" color="primary" onClick={toggleTemperatureUnit}>
+              Toggle Temperature
+          </Button>
+          <Button style={{marginRight: '5px'}} variant="contained" color="primary" onClick={handleClear}>
+              Clear
+          </Button>
+        </WaetherGroupButtons>  
+
+        {loading && <CircularProgress style={{ marginTop: '20px' }} />}
+        {error && (
+          <Alert variant="filled" severity="warning" style={{ marginTop: '20px' }}>
+            {error}
+          </Alert>
+        )}
+
+        {weatherData && !error && (
+          <div style={{ marginTop: '20px' }}>
+            <Typography variant="h5">{weatherData.name}</Typography>
+            <Typography variant="body1">
+              Temperature: {convertTemperature(weatherData.main.temp)}°{temperatureUnit}
+            </Typography>
+            <Typography variant="body1">Weather Description: {weatherData.weather.description}</Typography>
+            <Typography variant="body1">Humidity: {weatherData.main.humidity}%</Typography>
+            <Typography variant="body1">Wind Speed: {weatherData.wind.speed} m/s</Typography>
+          </div>
+        )}
+      </WeatherContainer>
     </>
   );
 };
