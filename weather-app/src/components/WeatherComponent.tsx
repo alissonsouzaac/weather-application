@@ -3,10 +3,9 @@ import { TextField, Button, CircularProgress, Typography, Alert } from '@mui/mat
 import { getWeatherData } from '../service/WeatherService';
 import { WaetherGroupButtons, WeatherContainer } from './styles';
 import WeatherDisplay from './WeatherDisplay';
-import weatherStore from '../store/weather/useWeatherStore';
+import weatherStore from '../store/weather/WeatherStore';
 import { WeatherData } from '../types/weather';
-import AlertComponent from './ErrorComponent';
-import { validateCity } from '../shared/helpers/CityValidate';
+import AlertComponent from './AlertComponent';
 
 
 const WeatherComponent: React.FC = () => {
@@ -18,14 +17,13 @@ const WeatherComponent: React.FC = () => {
   const [temperatureUnit, setTemperatureUnit] = useState<string>('Celsius');
 
   const handleSearch = async () => {
-    const validate = validateCity(city);
     setLoading(true);
     setError(null);
     setWeatherData(null);
 
-    if (!city || !validate) {
-      setError(validate ? 'Enter the name of a city' : 'Name of a city Name is invalid');
-      setSeverity('warning')
+    if (!city) {
+      setError('Enter the name of a city');
+      setSeverity('warning');
       setLoading(false);
       return;
     }
@@ -64,6 +62,7 @@ const WeatherComponent: React.FC = () => {
     setError('');
     if (!city ) {
       setError('Search for a city name first');
+      setSeverity('warning')
       return;
     }
     setTemperatureUnit((prevUnit) => (prevUnit === 'Celsius' ? 'Fahrenheit' : 'Celsius'));
@@ -116,7 +115,7 @@ const WeatherComponent: React.FC = () => {
             <Typography variant="body1">
               Temperature: {convertTemperature(weatherData.main.temp)}°{temperatureUnit}
             </Typography>
-            <Typography variant="body1">Weather Description: {weatherData.weather.description}</Typography>
+            <Typography variant="body1">Weather Description: {weatherData.weather[0].description}</Typography>
             <Typography variant="body1">Humidity: {weatherData.main.humidity}%</Typography>
             <Typography variant="body1">Wind Speed: {weatherData.wind.speed} m/s</Typography>
           </div>

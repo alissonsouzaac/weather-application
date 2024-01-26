@@ -1,5 +1,5 @@
 import React from 'react';
-import weatherStore from '../store/weather/useWeatherStore';
+import weatherStore from '../store/weather/WeatherStore';
 
 
 const WeatherDisplay: React.FC = () => {

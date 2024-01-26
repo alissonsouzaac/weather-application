@@ -10,9 +10,11 @@ interface AlertComponentProps {
 
 const AlertComponent: React.FC<AlertComponentProps> = ({ text, severity }) => {
   return (
-    <Alert variant="filled" severity={severity} style={{ marginTop: '20px' }}>
-      {text}
-    </Alert>
+    <div data-testid="alert-container">
+      <Alert variant="filled" severity={severity} style={{ marginTop: '20px' }}>
+        {text}
+     </Alert>
+    </div>
   );
 };
 

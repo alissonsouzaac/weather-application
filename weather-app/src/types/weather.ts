@@ -4,9 +4,9 @@ export interface WeatherData {
       temp: number;
       humidity: number;
     };
-    weather: {
+    weather: [{
       description: string;
-    };
+    }];
     wind: {
       speed: number;
     };
