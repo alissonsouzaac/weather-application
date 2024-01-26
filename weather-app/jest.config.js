@@ -7,7 +7,7 @@ module.exports = {
     clearMocks: true,
     globals: {
       "ts-jest": {
-        isolatedModules: true,
+        isolatedModules: false,
       },
     },
   };

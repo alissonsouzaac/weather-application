@@ -8,9 +8,11 @@ import api from './api';
 
 //const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-const mockAxios = new MockAdapter(axios);
+const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-const mockWeatherData = {
+//const mockAxios = new MockAdapter(axios);
+
+const mockWeatherData: WeatherData = {
   name: 'London',
     main: {
       temp: 30,
@@ -46,11 +48,14 @@ const mockRequestError = () => {
 describe('WeatherService', () => {
 
   afterEach(() => {
-    jest.resetAllMocks();
+    //mockAxios.reset();
   });
 
   test('should fetch weather data for a valid city', async () => {
-    mockAxios.onGet("London").reply(200, mockWeatherData);
+    const city = "London";
+   // const result = await getWeatherData(city, axios as AxiosInstance);
+
+ //   expect(result).toEqual(mockWeatherData);
    // axios.get = jest.fn().mockResolvedValue(mockWeatherData);
    //await mockedApi.get.mockImplementation(() => mockRequest(mockWeatherData))
      //const city = "London";
@@ -73,9 +78,9 @@ describe('WeatherService', () => {
   });
 
   test('should return an error for an invalid city', async () => {
-    // const invalidCity = 'InvalidCity123'; // Uma cidade que provavelmente não existe
+     const invalidCity = 'InvalidCity123';
 
-    // const result = await getWeatherData(invalidCity);
+    // const result = await getWeatherData(invalidCity, axios as  AxiosInstance);
 
     // expect((result as WeatherError).message).toContain('valid city name');
   });

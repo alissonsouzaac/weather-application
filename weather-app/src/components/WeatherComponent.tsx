@@ -5,6 +5,8 @@ import { WaetherGroupButtons, WeatherContainer } from './styles';
 import WeatherDisplay from './WeatherDisplay';
 import weatherStore from '../store/weather/useWeatherStore';
 import { WeatherData } from '../types/weather';
+import AlertComponent from './ErrorComponent';
+import { validateCity } from '../shared/helpers/CityValidate';
 
 
 const WeatherComponent: React.FC = () => {
@@ -12,15 +14,18 @@ const WeatherComponent: React.FC = () => {
   const [weatherData, setWeatherData] = useState<WeatherData | null>();
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [severity, setSeverity] = useState<'error' | 'warning'>('warning');
   const [temperatureUnit, setTemperatureUnit] = useState<string>('Celsius');
 
   const handleSearch = async () => {
+    const validate = validateCity(city);
     setLoading(true);
     setError(null);
     setWeatherData(null);
 
-    if (!city) {
-      setError('Enter the name of a city');
+    if (!city || !validate) {
+      setError(validate ? 'Enter the name of a city' : 'Name of a city Name is invalid');
+      setSeverity('warning')
       setLoading(false);
       return;
     }
@@ -30,6 +35,7 @@ const WeatherComponent: React.FC = () => {
 
       if ('message' in data) {
         setError(data.message);
+        setSeverity(data.severity);
       } else {
         setWeatherData(data);
       }
@@ -55,6 +61,11 @@ const WeatherComponent: React.FC = () => {
   }
 
   const toggleTemperatureUnit = () => {
+    setError('');
+    if (!city ) {
+      setError('Search for a city name first');
+      return;
+    }
     setTemperatureUnit((prevUnit) => (prevUnit === 'Celsius' ? 'Fahrenheit' : 'Celsius'));
   };
 
@@ -96,9 +107,7 @@ const WeatherComponent: React.FC = () => {
 
         {loading && <CircularProgress style={{ marginTop: '20px' }} />}
         {error && (
-          <Alert variant="filled" severity="warning" style={{ marginTop: '20px' }}>
-            {error}
-          </Alert>
+          <AlertComponent text={error} severity={severity} />
         )}
 
         {weatherData && !error && (

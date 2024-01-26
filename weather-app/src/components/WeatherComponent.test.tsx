@@ -3,19 +3,37 @@ import { render, screen, fireEvent, waitFor, renderHook } from '@testing-library
 import WeatherComponent from './WeatherComponent';
 import { getWeatherData as mockGetWeatherData } from '../service/WeatherService';
 import axios from "axios";
+import * as WeatherService from '../service/WeatherService';
 
-
-//jest.mock('../service/WeatherService');
+jest.mock('../service/WeatherService');
 
 const mockWeatherData = {
   name: 'London',
-  main: { temp: 20, humidity: 60 },
-  weather: [{ description: 'Clear' }],
+  main: { temp: 25, humidity: 60 },
+  weather: [{ description: 'Clear Sky' }],
   wind: { speed: 5 },
 };
 
 describe('WeatherComponent', () => {
+  beforeEach(() => {
+    // Limpa o mock antes de cada teste
+    jest.clearAllMocks();
+  });
   test('renders WeatherComponent correctly', async () => {
+    (WeatherService.getWeatherData as jest.Mock).mockResolvedValueOnce(mockWeatherData);
+    render(<WeatherComponent />);
+
+    fireEvent.change(screen.getByLabelText('Enter city name'), { target: { value: 'London' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Search' }));
+
+    await waitFor(() => {
+      expect(WeatherService.getWeatherData).toHaveBeenCalledWith('London');
+      expect(screen.getByText('London')).toBeInTheDocument();
+      expect(screen.getByText('Temperature: 77°F')).toBeInTheDocument();
+      expect(screen.getByText('Weather Description: Clear sky')).toBeInTheDocument();
+      expect(screen.getByText('Humidity: 60%')).toBeInTheDocument();
+      expect(screen.getByText('Wind Speed: 5 m/s')).toBeInTheDocument();
+    });
    // render(<WeatherComponent />)
     // Mock a successful API response
     // mockGetWeatherData.mockResolvedValue(mockWeatherData);

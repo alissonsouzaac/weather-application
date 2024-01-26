@@ -14,4 +14,5 @@ export interface WeatherData {
   
 export interface WeatherError {
       message: string;
+      severity: 'error' | 'warning';
     }
